@@ -92,7 +92,7 @@ export function SwipeDeck({ cards }: SwipeDeckProps) {
 
       </div>
 
-      <aside className="rounded-[24px] border border-[#dfe2eb] bg-white p-6 shadow-[0_15px_60px_rgba(15,23,42,0.1)]">
+      <aside className="rounded-[24px] border border-[#dfe2eb] bg-white p-4 shadow-[0_15px_60px_rgba(15,23,42,0.1)] sm:p-6">
         <div className="flex items-center justify-between">
           <div>
             <p className="metric-label">Historique immédiat</p>
@@ -288,7 +288,9 @@ function CardContent({
         muted && "opacity-70"
       )}
     >
-      <div className={cn("flex items-center gap-3 px-6 py-4", theme.bgHeader)}>
+      <div
+        className={cn("flex items-center gap-3 px-4 py-4 sm:px-6", theme.bgHeader)}
+      >
         <div
           className={cn(
             "flex h-10 w-10 items-center justify-center rounded-full bg-white/60",
@@ -319,7 +321,7 @@ function CardContent({
         )}
       </div>
 
-      <div className="flex flex-1 flex-col p-6">
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
         <h3 className="mb-1 text-xl font-bold leading-tight text-slate-900">
           {card.titre}
         </h3>
@@ -351,7 +353,7 @@ function CardContent({
             </span>
           </div>
           {card.type === "indexation" && card.montantActuel && (
-            <div className="mx-4 mt-2 flex justify-center gap-4 border-t border-slate-200 pt-2 text-xs text-slate-500">
+            <div className="mx-2 mt-2 flex justify-center gap-3 border-t border-slate-200 pt-2 text-xs text-slate-500 sm:mx-4 sm:gap-4">
               <span>Actuel: {formatChf(card.montantActuel)}</span>
               <span className="text-slate-300">→</span>
               {card.montantCible ? (
@@ -381,7 +383,7 @@ function CardContent({
         </div>
       </div>
 
-      <div className="border-t border-slate-100 bg-slate-50 px-6 py-2 text-center">
+      <div className="border-t border-slate-100 bg-slate-50 px-5 py-2 text-center sm:px-6">
         <p className="text-[10px] text-slate-400">Source IA : {card.source}</p>
       </div>
     </div>

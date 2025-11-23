@@ -54,6 +54,7 @@ export function AppShell({
 }: AppShellProps) {
   const [activeId, setActiveId] = useState("brief");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const observer = useMemo(() => {
     if (typeof window === "undefined") return null;
@@ -89,7 +90,7 @@ export function AppShell({
 
   return (
     <div className="min-h-screen text-[#1b2738]">
-      <div className="mx-auto flex w-full max-w-7xl gap-6 px-4 py-8 lg:px-10">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row lg:px-10 lg:py-8">
         <aside className="sticky top-6 hidden h-[calc(100vh-3rem)] w-64 flex-shrink-0 flex-col rounded-3xl border border-[#dfe2eb] bg-white p-6 shadow-[0_25px_60px_rgba(16,24,40,0.08)] lg:flex">
           <div className="mb-10 space-y-5">
             <div>
@@ -158,7 +159,51 @@ export function AppShell({
           </div>
         </aside>
 
-        <main className="flex-1 space-y-12 pb-16">
+        <main className="flex-1 space-y-12 pb-24 lg:pb-16">
+          <div className="flex flex-col gap-3 lg:hidden">
+            <div className="flex flex-wrap items-center gap-3">
+              <div>
+                <p className="text-xs uppercase tracking-[0.4em] text-[#677f91]">
+                  Investis Group
+                </p>
+                <p className="text-lg font-semibold text-[#0f1f32]">
+                  Console mobile IA
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMobileNavOpen((prev) => !prev)}
+                aria-expanded={mobileNavOpen}
+                className="ml-auto flex items-center gap-2 rounded-full border border-[#dfe2eb] bg-white px-3 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#1c2f4a]"
+              >
+                Segments
+                <Menu className="h-4 w-4" />
+              </button>
+            </div>
+            {mobileNavOpen ? (
+              <div className="rounded-3xl border border-[#e5e8f0] bg-white p-3 shadow-[0_15px_40px_rgba(15,23,42,0.15)]">
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {segments.map((segment) => (
+                    <button
+                      key={segment.id}
+                      type="button"
+                      onClick={() => {
+                        setMobileNavOpen(false);
+                        handleNavClick(segment.id);
+                      }}
+                      className="rounded-2xl border border-[#eef1f7] px-3 py-2 text-left text-sm text-[#0f1f32] hover:border-[#dce2f0]"
+                    >
+                      <p className="font-semibold">{segment.label}</p>
+                      <p className="text-xs text-[#6b7382]">
+                        {segment.detail}
+                      </p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
+
           <section
             id="brief"
             data-shell-section
@@ -174,7 +219,7 @@ export function AppShell({
               <span className="rounded-full border border-[#aa8f66]/40 bg-[#faefe2] px-3 py-1 text-xs font-medium text-[#5c452b]">
                 Mode confiance IA
               </span>
-              <div className="ml-auto flex items-center gap-2">
+              <div className="ml-auto hidden items-center gap-2 lg:flex">
                 <p className="text-xs uppercase tracking-[0.3em] text-[#677f91]">
                   Segmentation IA
                 </p>
@@ -218,7 +263,7 @@ export function AppShell({
                 </div>
               </div>
             </div>
-            <div className="rounded-3xl border border-[#dfe2eb] bg-white p-6 shadow-[0_25px_70px_rgba(16,24,40,0.08)]">
+            <div className="rounded-3xl border border-[#dfe2eb] bg-white p-4 shadow-[0_25px_70px_rgba(16,24,40,0.08)] sm:p-6">
               <div className="grid gap-4 xl:grid-cols-4">
                 <div className="rounded-3xl border border-[#f2c8b9] bg-[#fef4ef] p-4 shadow-[0_20px_50px_rgba(184,111,82,0.15)]">
                 <div className="flex items-center justify-between">

@@ -66,12 +66,16 @@ export function SectionFrame({
     sectionAccentVariants[accent] ?? sectionAccentVariants.navy;
 
   return (
-    <section id={id} data-shell-section className="scroll-mt-28 space-y-6">
-      <div className="space-y-4">
-        <p className="metric-label">{eyebrow}</p>
+    <section
+      id={id}
+      data-shell-section
+      className="scroll-mt-24 space-y-5 sm:space-y-6"
+    >
+      <div className="space-y-3 sm:space-y-4">
+        <p className="metric-label text-xs">{eyebrow}</p>
         <div className="flex flex-wrap items-center gap-3">
           <div className="group relative inline-flex items-center">
-            <h2 className={cn("text-3xl font-semibold", palette.heading)}>
+            <h2 className={cn("text-2xl font-semibold sm:text-3xl", palette.heading)}>
               {title}
             </h2>
             {hoverDescription ? (
@@ -83,7 +87,7 @@ export function SectionFrame({
           {chip ? (
             <span
               className={cn(
-                "rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-wide",
+                "rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide",
                 palette.badge
               )}
             >
@@ -91,7 +95,7 @@ export function SectionFrame({
             </span>
           ) : null}
         </div>
-        <p className={cn("max-w-3xl text-sm", palette.body)}>
+        <p className={cn("max-w-3xl text-sm leading-relaxed", palette.body)}>
           {description}
         </p>
       </div>
