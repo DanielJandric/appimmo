@@ -8,7 +8,15 @@ import {
   useTransform,
 } from "framer-motion";
 import { useCallback, useState } from "react";
-import { Check, Clock, X } from "lucide-react";
+import {
+  AlertTriangle,
+  Check,
+  Clock,
+  Receipt,
+  TrendingUp,
+  Wrench,
+  X,
+} from "lucide-react";
 import { BriefCard } from "@/lib/mock-data";
 import { cn, formatChf } from "@/lib/utils";
 
@@ -54,7 +62,7 @@ export function SwipeDeck({ cards }: SwipeDeckProps) {
               key={topCard.id}
               layout
               data-testid={`card-${topCard.id}`}
-              className="relative w-full rounded-[36px] px-8 py-8 lg:px-12"
+              className="relative w-full overflow-hidden rounded-[36px] border border-[#dfe2eb] bg-white"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{
@@ -220,66 +228,162 @@ function CardContent({
   card: BriefCard;
   muted?: boolean;
 }) {
+  const styleMap = {
+    indexation: {
+      bgHeader: "bg-emerald-100",
+      textHeader: "text-emerald-800",
+      iconColor: "text-emerald-600",
+      icon: TrendingUp,
+      label: "Opportunité de Gain",
+      valuePrefix: "+",
+      valueColor: "text-emerald-700",
+    },
+    facture: {
+      bgHeader: "bg-slate-100",
+      textHeader: "text-slate-700",
+      iconColor: "text-slate-500",
+      icon: Receipt,
+      label: "Validation Facture",
+      valuePrefix: "-",
+      valueColor: "text-slate-700",
+    },
+    vacance: {
+      bgHeader: "bg-rose-100",
+      textHeader: "text-rose-800",
+      iconColor: "text-rose-600",
+      icon: AlertTriangle,
+      label: "Alerte Vacance",
+      valuePrefix: "Perte ",
+      valueColor: "text-rose-700",
+    },
+    maintenance: {
+      bgHeader: "bg-amber-100",
+      textHeader: "text-amber-800",
+      iconColor: "text-amber-600",
+      icon: Wrench,
+      label: "Maintenance",
+      valuePrefix: "Budget ",
+      valueColor: "text-amber-700",
+    },
+  };
+
+  const theme =
+    styleMap[card.type as keyof typeof styleMap] ?? styleMap.indexation;
+  const Icon = theme.icon;
+
+  const mainAmount =
+    card.type === "vacance"
+      ? card.montantActuel || 0
+      : card.montantCible && card.montantActuel
+      ? card.montantCible - card.montantActuel
+      : card.montantActuel || 0;
+
+  const isMonthly = card.type === "indexation" || card.type === "vacance";
+  const impactAnnuel = isMonthly ? mainAmount * 12 : mainAmount;
+
   return (
-    <div className={cn("flex h-full flex-col gap-4", muted && "opacity-70")}>
-      <div className="flex items-center justify-between">
+    <div
+      className={cn(
+        "flex h-full flex-col overflow-hidden bg-white",
+        muted && "opacity-70"
+      )}
+    >
+      <div className={cn("flex items-center gap-3 px-6 py-4", theme.bgHeader)}>
+        <div
+          className={cn(
+            "flex h-10 w-10 items-center justify-center rounded-full bg-white/60",
+            theme.iconColor
+          )}
+        >
+          <Icon size={20} strokeWidth={2.5} />
+        </div>
         <div>
-          <p className="text-xs uppercase tracking-[0.4em] text-[#677f91]">
-            {card.type === "indexation" && "Indexation IPC"}
-            {card.type === "facture" && "Facture"}
-            {card.type === "vacance" && "Vacance"}
-            {card.type === "maintenance" && "Maintenance"}
+          <p
+            className={cn(
+              "text-xs font-bold uppercase tracking-widest",
+              theme.textHeader
+            )}
+          >
+            {theme.label}
           </p>
-          <p className="mt-1 text-lg font-semibold text-[#0f1f32]">
-            {card.titre}
+          <p
+            className={cn("text-sm font-medium opacity-80", theme.textHeader)}
+          >
+            {card.localisation}
           </p>
-          <p className="text-sm text-[#5b6474]">{card.localisation}</p>
         </div>
         {card.urgence === "haute" && (
-          <span className="rounded-full border border-[#b86f52]/30 bg-[#fdece5] px-3 py-1 text-xs font-semibold uppercase text-[#7f351e]">
-            Urgent
+          <span className="ml-auto rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-rose-600 shadow-sm">
+            Prioritaire
           </span>
         )}
       </div>
 
-      <p className="text-base text-[#1b2738]">{card.contenu}</p>
-      {card.locataire && (
-        <p className="text-sm text-[#5b6474]">Locataire : {card.locataire}</p>
-      )}
+      <div className="flex flex-1 flex-col p-6">
+        <h3 className="mb-1 text-xl font-bold leading-tight text-slate-900">
+          {card.titre}
+        </h3>
+        {card.locataire ? (
+          <p className="mb-6 text-sm text-slate-500">
+            Locataire :{" "}
+            <span className="font-medium text-slate-700">
+              {card.locataire}
+            </span>
+          </p>
+        ) : (
+          <div className="h-6" />
+        )}
 
-      {(card.montantActuel || card.montantCible) && (
-        <div className="grid grid-cols-2 gap-3 rounded-2xl border border-[#e4e7f0] bg-[#f9fafc] p-4">
-          {card.montantActuel && (
-            <div>
-              <p className="metric-label">Situation actuelle</p>
-              <p className="font-mono text-lg text-[#0f1f32]">
-                {formatChf(card.montantActuel)}
-              </p>
-            </div>
-          )}
-          {card.montantCible && (
-            <div>
-              <p className="metric-label">Potentiel IA</p>
-              <p className="font-mono text-lg text-[#1c2f4a]">
-                {formatChf(card.montantCible)}
-              </p>
+        <div className="mb-6 rounded-2xl border border-slate-100 bg-slate-50 p-5 text-center">
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-400">
+            Impact Financier (Annuel)
+          </p>
+          <div
+            className={cn(
+              "text-4xl font-mono font-bold tracking-tight",
+              theme.valueColor
+            )}
+          >
+            {theme.valuePrefix}
+            {formatChf(impactAnnuel).replace("CHF ", "")}
+            <span className="ml-1 text-lg font-sans font-normal text-slate-400">
+              CHF
+            </span>
+          </div>
+          {card.type === "indexation" && card.montantActuel && (
+            <div className="mx-4 mt-2 flex justify-center gap-4 border-t border-slate-200 pt-2 text-xs text-slate-500">
+              <span>Actuel: {formatChf(card.montantActuel)}</span>
+              <span className="text-slate-300">→</span>
+              {card.montantCible ? (
+                <span className="font-bold text-emerald-600">
+                  Cible: {formatChf(card.montantCible)}
+                </span>
+              ) : null}
             </div>
           )}
         </div>
-      )}
 
-      <div className="flex flex-wrap gap-2">
-        {card.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full border border-[#dfe2eb] bg-[#f6f8fb] px-3 py-1 text-xs uppercase tracking-wide text-[#677f91]"
-          >
-            {tag}
-          </span>
-        ))}
+        <div className="mb-auto">
+          <p className="text-sm leading-relaxed text-slate-600">
+            {card.contenu}
+          </p>
+        </div>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          {card.tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-medium uppercase text-slate-500"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
       </div>
 
-      <p className="text-xs text-[#677f91]">{card.source}</p>
+      <div className="border-t border-slate-100 bg-slate-50 px-6 py-2 text-center">
+        <p className="text-[10px] text-slate-400">Source IA : {card.source}</p>
+      </div>
     </div>
   );
 }

@@ -343,6 +343,12 @@ const findAsset = (id: string) =>
   propertyAssets.find((asset) => asset.id === id)!;
 
 const monthlyNet = (asset: PropertyAsset) => asset.netRental / 12;
+const sliceMonthly = (
+  asset: PropertyAsset,
+  share: number,
+  min = 1500,
+  max = 12000
+) => clamp(monthlyNet(asset) * share, min, max);
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -355,7 +361,7 @@ const yearsSinceRefit = (asset: PropertyAsset) => {
 export const morningBriefCards: BriefCard[] = [
   (() => {
     const asset = findAsset("rue-du-mole-5");
-    const actuel = monthlyNet(asset);
+    const actuel = sliceMonthly(asset, 0.32, 4000, 6500);
     const cible = actuel * 1.045;
     return {
       id: "brief-rue-du-mole",
@@ -381,7 +387,7 @@ export const morningBriefCards: BriefCard[] = [
   })(),
   (() => {
     const asset = findAsset("avenue-du-censuy-18-26");
-    const actuel = monthlyNet(asset);
+    const actuel = sliceMonthly(asset, 0.05, 3200, 4800);
     const cible = actuel * 1.06;
     return {
       id: "reloc-censuy",
@@ -399,8 +405,8 @@ export const morningBriefCards: BriefCard[] = [
   })(),
   (() => {
     const asset = findAsset("rue-du-grand-pre-39");
-    const actuel = monthlyNet(asset);
-    const perte = (asset.vacancyRate / 100) * actuel;
+    const exposure = sliceMonthly(asset, 0.08, 2600, 5200);
+    const perte = (asset.vacancyRate / 100) * exposure;
     return {
       id: "vacance-grand-pre",
       type: "vacance",
@@ -409,8 +415,8 @@ export const morningBriefCards: BriefCard[] = [
         perte
       )}. Publier l'annonce Carrefour Immobilier + Helvétique Facility.`,
       localisation: `${asset.ville} · Quartier Nations`,
-      montantActuel: Math.round(actuel),
-      montantCible: Math.round(actuel * 1.05),
+      montantActuel: Math.round(perte),
+      montantCible: Math.round(perte * 0.35),
       urgence: "haute",
       tags: ["Vacance", "Marketing", "Genève"],
       source: "Sentinelle IA · propertylist.txt",
