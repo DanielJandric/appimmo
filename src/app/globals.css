@@ -1,26 +1,34 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  body {
+    @apply text-[#1b2738] antialiased;
+    font-feature-settings: "ss01" 1, "cv02" 1;
+    min-height: 100vh;
+    font-family: "SF Pro Display", "SF Pro Text", "SF Pro", -apple-system,
+      BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-image: linear-gradient(180deg, #f8f7f3 0%, #eef1f5 45%, #e7eaef 100%);
+    background-attachment: fixed;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  ::selection {
+    background-color: rgba(170, 143, 102, 0.4);
+    color: #1b2738;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .glass-panel {
+    @apply bg-white/90 border border-[#dfe2eb] rounded-3xl shadow-[0_20px_60px_rgba(15,23,42,0.08)];
+  }
+
+  .metric-label {
+    @apply text-xs uppercase tracking-[0.2em] text-[#677f91];
+  }
 }
